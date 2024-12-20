@@ -1,31 +1,21 @@
 import express from "express";
+import { readFile } from "fs/promises";
 
 const app = express();
 const PORT = 3000;
 
-const users = [
-  {
-    id: 1,
-    name: "A",
-  },
-  {
-    id: 2,
-    name: "B",
-  },
-  {
-    id: 3,
-    name: "C",
-  },
-  {
-    id: 4,
-    name: "D",
-  },
-];
-
-app.get("/", (req, res) => {
-  res.send(users);
+// Serve JSON on an endpoint
+app.get("/users", async (req, res) => {
+  try {
+    const jsonData = await readFile("./users.json", "utf8");
+    res.setHeader("Content-Type", "application/json");
+    res.send(jsonData);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to read data" });
+  }
 });
 
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Express server running at http://localhost:${PORT}/`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
